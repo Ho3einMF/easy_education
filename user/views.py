@@ -1,15 +1,13 @@
-from django.shortcuts import render
-
 # Create your views here.
-from rest_framework import status
 
-from rest_framework.generics import CreateAPIView
+from rest_framework import status
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.conf import USER_CREATION_MESSAGE
-from user.serializers import SignupUserSerializer
+from user.serializers import SignupUserSerializer, TokenSerializer
 
 
 class SignupAPIView(APIView):
@@ -23,3 +21,7 @@ class SignupAPIView(APIView):
             return Response({'details': USER_CREATION_MESSAGE}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ObtainAuthenticationToken(ObtainAuthToken):
+    serializer_class = TokenSerializer
