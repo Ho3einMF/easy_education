@@ -43,7 +43,7 @@ class Course(models.Model):
 class Lesson(models.Model):
     title = models.CharField(max_length=200)
     video = models.FileField(upload_to='lesson_video/')
-    lesson_files = models.FileField(upload_to='lesson_files/')
+    lesson_files = models.FileField(upload_to='lesson_files/', blank=True)
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(default=now)
 
