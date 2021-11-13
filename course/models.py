@@ -3,7 +3,11 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
 
-from accounts.models import User
+from user.models import User
+
+
+class Hashtag(models.Model):
+    title = models.CharField(max_length=50)
 
 
 class Category(models.Model):
@@ -20,28 +24,23 @@ class Category(models.Model):
 
 class Course(models.Model):
     title = models.CharField(max_length=200)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    slug = models.SlugField(max_length=200, unique=True, primary_key=True, auto_created=False)
+    image = models.ImageField(upload_to='courses_images/')
     short_description = models.TextField(blank=False, max_length=60)
     description = models.TextField(blank=False)
-    outcome = models.CharField(max_length=200)
-    requirements = models.CharField(max_length=200)
-    language = models.CharField(max_length=200)
-    price = models.FloatField(validators=[MinValueValidator(9.99)])
-    level = models.CharField(max_length=20)
-    thumbnail = models.ImageField(upload_to='thumbnails/')
-    video_url = models.CharField(max_length=100)
-    is_published = models.BooleanField(default=True)
+    price = models.IntegerField(default=0)
+    is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(default=now)
 
+    # Foreign keys
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, related_name='courses')
+
+    # Many to many
+    hashtags = models.ManyToManyField(Hashtag, related_name='courses')
+
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super(Course, self).save(*args, **kwargs)
 
 
 class Lesson(models.Model):
