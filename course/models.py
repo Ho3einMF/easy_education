@@ -1,6 +1,4 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.utils.text import slugify
 from django.utils.timezone import now
 
 from user.models import User
@@ -39,12 +37,14 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
-    title = models.CharField(max_length=100)
-    duration = models.FloatField(validators=[MinValueValidator(0.30), MaxValueValidator(30.00)])
-    video_url = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
+    video = models.FileField(upload_to='lesson_video/')
+    lesson_files = models.FileField(upload_to='lesson_files/')
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(default=now)
+
+    # Foreign key
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
 
     def __str__(self):
         return self.title
