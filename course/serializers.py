@@ -7,7 +7,7 @@ from user.models import User
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'get_full_name', 'email']  # TODO => add image filed for user and also add in this serializer
+        fields = ['id', 'first_name', 'last_name', 'email', 'image']
 
 
 class CategorySerializer(serializers.ModelSerializer):
