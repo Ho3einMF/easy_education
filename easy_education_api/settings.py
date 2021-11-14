@@ -38,21 +38,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Apps
+    'user',
+    'course',
+
     # Packages
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
 
-    # Apps
-    'user',
-    'course',
-
-    # Note: this package should be placed last in INSTALLED_APPS
-    'django_cleanup.apps.CleanupConfig',
+    'django_cleanup.apps.CleanupConfig',  # Note: this package should be placed last in INSTALLED_APPS
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',  # For Django Debug Toolbar
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # For Django Debug Toolbar Package
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 
+from course.managers import CourseManager
 from user.models import User
 
 
@@ -35,6 +36,9 @@ class Course(models.Model):
 
     # Many to many
     hashtags = models.ManyToManyField(Hashtag, related_name='courses')
+
+    # Manager
+    objects = CourseManager()
 
     def __str__(self):
         return self.title
