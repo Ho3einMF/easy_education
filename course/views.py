@@ -3,8 +3,8 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 
-from course.models import Course
-from course.serializers import CourseSerializer
+from course.models import Course, Category
+from course.serializers import CourseSerializer, CategorySerializer
 
 
 class CourseListAPIView(ListAPIView):
@@ -12,3 +12,10 @@ class CourseListAPIView(ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = CourseSerializer
     queryset = Course.objects.get_all_courses()
+
+
+class CategoryListAPIView(ListAPIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()

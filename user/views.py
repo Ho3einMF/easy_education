@@ -1,14 +1,11 @@
 # Create your views here.
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.conf import USER_CREATION_MESSAGE
-from user.models import User
 from user.serializers import SignupUserSerializer, TokenSerializer, TeacherSerializer
 
 
