@@ -19,3 +19,12 @@ class CategoryListAPIView(ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+class CourseByCategory(ListAPIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    serializer_class = CourseSerializer
+
+    def get_queryset(self):
+        return Course.objects.get_courses_by_category(self.kwargs['category_id'])

@@ -10,3 +10,6 @@ class CourseManager(models.Manager):
                select_related('teacher'). \
                select_related('category'). \
                prefetch_related('hashtags').filter(is_published=True)
+
+    def get_courses_by_category(self, category_id):
+        return self.get_all_courses().filter(category_id=category_id)
