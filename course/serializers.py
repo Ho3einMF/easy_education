@@ -1,13 +1,7 @@
 from rest_framework import serializers
 
 from course.models import Course, Category
-from user.models import User
-
-
-class TeacherSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'image']
+from user.serializers import TeacherSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
