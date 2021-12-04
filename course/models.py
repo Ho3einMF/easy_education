@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 
-from course.managers import CourseManager
+from course.managers import CourseManager, LessonManager
 from user.models import User
 
 
@@ -53,6 +53,9 @@ class Lesson(models.Model):
 
     # Foreign key
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
+
+    # Manager
+    objects = LessonManager()
 
     def __str__(self):
         return self.title

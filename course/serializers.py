@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from course.models import Course, Category
+from course.models import Course, Category, Lesson
 from user.serializers import TeacherSerializer
 
 
@@ -18,3 +18,9 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+
+
+class LessonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        exclude = ('course',)
