@@ -7,12 +7,26 @@ from user.serializers import TeacherSerializer
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ('title',)
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    parent = CategorySerializer(read_only=True)
+
+    class Meta:
+        model = Category
+        fields = ('id', 'title', 'image', 'parent')
+
+
+class CourseCategoryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'title', 'image')
 
 
 class CourseSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
+    category = CourseCategoryListSerializer(read_only=True)
     hashtags = serializers.StringRelatedField(many=True)
 
     class Meta:

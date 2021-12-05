@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 
-from course.managers import CourseManager, LessonManager
+from course.managers import CourseManager, LessonManager, CategoryManager
 from user.models import User
 
 
@@ -14,7 +14,13 @@ class Hashtag(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='categories_images/')
+    image = models.ImageField(upload_to='categories_images/', blank=True)
+
+    # Foreign key (for handling sub category)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+
+    # Manager
+    objects = CategoryManager()
 
     def __str__(self):
         return self.title

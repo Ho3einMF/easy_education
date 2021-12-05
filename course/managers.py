@@ -19,3 +19,9 @@ class LessonManager(models.Manager):
 
     def get_lessons_of_course(self, course_id):
         return self.filter(course_id=course_id)
+
+
+class CategoryManager(models.Manager):
+
+    def get_all_categories(self):
+        return self.select_related('parent')
