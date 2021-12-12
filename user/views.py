@@ -5,8 +5,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from user.conf import USER_CREATION_MESSAGE
-from user.serializers import SignupUserSerializer, TokenSerializer, TeacherSerializer
+from user.conf import USER_CREATION_MESSAGE, PASSWORD_CHANGED_MESSAGE
+from user.serializers import SignupUserSerializer, TokenSerializer, TeacherSerializer, ChangePasswordSerializer
 from user.utils import get_user_or_404
 
 
@@ -40,5 +40,18 @@ class UserProfileAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request):
+        instance = get_user_or_404(user_id=request.user.id)
+        serializer = ChangePasswordSerializer(instance=instance, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'details': PASSWORD_CHANGED_MESSAGE}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,10 +1,11 @@
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 from user.models import User
-from user.utils import check_new_password
+from user.utils import check_new_password, check_old_password
 
 
 class SignupUserSerializer(serializers.ModelSerializer):
@@ -13,7 +14,7 @@ class SignupUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'password1', 'password2']
+        fields = ('email', 'password1', 'password2')
 
     def validate_password2(self, value):
         return check_new_password(self.initial_data['password1'], value)
@@ -35,3 +36,24 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'image']
         extra_kwargs = {'email': {'read_only': True}}
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+    old_password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ('old_password', 'password1', 'password2')
+
+    def validate_old_password(self, value):
+        return check_old_password(user=self.context['request'].user, old_password=value)
+
+    def validate_password2(self, value):
+        return check_new_password(self.initial_data['password1'], value)
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password1'])
+        instance.save()
+        return instance
