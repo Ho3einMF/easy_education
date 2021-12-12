@@ -34,3 +34,4 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'image']
+        extra_kwargs = {'email': {'read_only': True}}

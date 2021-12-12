@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from user.conf import USER_CREATION_MESSAGE
 from user.serializers import SignupUserSerializer, TokenSerializer, TeacherSerializer
+from user.utils import get_user_or_404
 
 
 class SignupAPIView(APIView):
@@ -32,3 +33,12 @@ class UserProfileAPIView(APIView):
     def get(self, request):
         serializer = TeacherSerializer(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        instance = get_user_or_404(user_id=request.user.id)
+        serializer = TeacherSerializer(instance=instance, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
