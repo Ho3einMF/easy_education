@@ -14,6 +14,9 @@ class CourseManager(models.Manager):
     def get_courses_by_category(self, category_id):
         return self.get_all_courses().filter(category_id=category_id)
 
+    def get_courses_by_teacher(self, teacher_id):
+        return self.get_all_courses().filter(teacher_id=teacher_id)
+
 
 class LessonManager(models.Manager):
 
@@ -23,5 +26,6 @@ class LessonManager(models.Manager):
 
 class CategoryManager(models.Manager):
 
+    # using select_related to handling foreign key field in optimized mode.
     def get_all_categories(self):
         return self.select_related('parent')

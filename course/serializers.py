@@ -24,8 +24,26 @@ class CourseCategoryListSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'image')
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseListSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer(read_only=True)
+    category = CourseCategoryListSerializer(read_only=True)
+    hashtags = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
+class CourseByCategorySerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer(read_only=True)
+    hashtags = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
+class CourseByTeacherSerializer(serializers.ModelSerializer):
     category = CourseCategoryListSerializer(read_only=True)
     hashtags = serializers.StringRelatedField(many=True)
 
