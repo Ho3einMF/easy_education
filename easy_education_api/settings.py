@@ -89,9 +89,9 @@ WSGI_APPLICATION = 'easy_education_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'easy_education',  # Database Name
-        'USER': 'hossein',  # User Of Mysql
-        'PASSWORD': '123456',
+        'NAME': 'DB_NAME',  # Database Name
+        'USER': 'DB_USER',  # User Of Mysql
+        'PASSWORD': 'DB_PASSWORD',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
