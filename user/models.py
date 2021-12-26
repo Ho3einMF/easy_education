@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from user.conf import DUPLICATE_EMAIL_ERROR_MESSAGE
 from user.managers import UserManager
 
 
@@ -9,7 +10,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True, blank=False, null=False,
                               error_messages={
-                                  'unique': 'A user with that email already exists.',
+                                  'unique': DUPLICATE_EMAIL_ERROR_MESSAGE,
                               })
 
     USERNAME_FIELD = 'email'
