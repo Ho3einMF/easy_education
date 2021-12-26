@@ -1,11 +1,14 @@
 # Create your views here.
 
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from course.models import Course, Category, Lesson
 from course.serializers import CourseListSerializer, LessonSerializer, SubCategorySerializer, \
     CourseByCategorySerializer, CourseByTeacherSerializer
+from course.utils import get_course
 
 
 class CategoryListAPIView(ListAPIView):
@@ -47,3 +50,13 @@ class LessonsAPIView(ListAPIView):
 
     def get_queryset(self):
         return Lesson.objects.get_lessons_of_course(self.kwargs['course_id'])
+
+
+class JoinToCourse(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def get(request, **kwargs):
+        course = get_course(kwargs['course_id'])
+        course.participants.add(request.user)
+        return Response()

@@ -42,6 +42,7 @@ class Course(models.Model):
 
     # Many to many
     hashtags = models.ManyToManyField(Hashtag, related_name='courses')
+    participants = models.ManyToManyField(User, blank=True, related_name='participants')
 
     # Manager
     objects = CourseManager()
