@@ -1,5 +1,5 @@
 # Create your views here.
-
+from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 
 from course.models import Course, Category, Lesson, Comment
 from course.serializers import CourseListSerializer, LessonSerializer, SubCategorySerializer, \
-    CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer, CommentListSerializer
+    CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer, CommentListSerializer, \
+    CommentCreateSerializer
 from course.utils import get_course
 
 
@@ -76,3 +77,15 @@ class CommentListAPIView(ListAPIView):
 
     def get_queryset(self):
         return Comment.objects.get_course_comments(self.kwargs['course_id'])
+
+
+class CommentCreate(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = CommentCreateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

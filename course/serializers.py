@@ -90,3 +90,9 @@ class CommentListSerializer(serializers.ModelSerializer):
                 return 'disliked'
         else:
             return None
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('comment', 'user', 'course')
