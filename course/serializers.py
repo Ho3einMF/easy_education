@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from course.models import Course, Category, Lesson, Comment
+from course.utils import like_comment
 from user.serializers import TeacherSerializer
 
 
@@ -96,3 +97,15 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('comment', 'user', 'course')
+
+
+class CommentLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ('user', 'course', 'comment')
+
+    def save(self):
+        like_comment(self.validated_data['course'], self.validated_data['comment'], self.context['request'].user)
+        super(CommentLikeSerializer, self).save()
+

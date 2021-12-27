@@ -70,8 +70,8 @@ class Lesson(models.Model):
 
 class Comment(models.Model):
     comment = models.TextField()
-    likes = models.ManyToManyField(User, related_name='likes')
-    dislikes = models.ManyToManyField(User, related_name='dislikes')
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
+    dislikes = models.ManyToManyField(User, related_name='dislikes', blank=True)
     hide = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=now)
 

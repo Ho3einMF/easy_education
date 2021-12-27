@@ -1,7 +1,7 @@
 from django.urls import path
 
 from course.views import CourseListAPIView, CategoryListAPIView, CourseByCategoryAPIView, LessonsAPIView, \
-    CourseByTeacherAPIView, JoinToCourse, CoursesByUserAPIView, CommentListAPIView, CommentCreate
+    CourseByTeacherAPIView, JoinToCourse, CoursesByUserAPIView, CommentListAPIView, CommentCreate, CommentLikeAPIView
 
 app_name = 'course'
 urlpatterns = [
@@ -34,5 +34,8 @@ urlpatterns = [
     path('comments/<int:course_id>/', CommentListAPIView.as_view(), name='comment-list'),
 
     # post comment on a course
-    path('comment/create/', CommentCreate.as_view(), name='comment-create')
+    path('comment/create/', CommentCreate.as_view(), name='comment-create'),
+
+    # like a comment
+    path('comment/like/', CommentLikeAPIView.as_view(), name='comment-like')
 ]
