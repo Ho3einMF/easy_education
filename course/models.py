@@ -66,3 +66,20 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    comment = models.TextField()
+    like = models.IntegerField(default=0)
+    dislike = models.IntegerField(default=0)
+    hide = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=now)
+
+    # Foreign key
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='comments')
+    # for handling replies comments
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='replies')
+
+    def __str__(self):
+        return f'email: {self.user.email} | course: {self.course.title}'
