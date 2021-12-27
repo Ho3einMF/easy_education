@@ -52,6 +52,12 @@ class CourseByTeacherSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CoursesByUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ('id', 'title', 'image')
+
+
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson

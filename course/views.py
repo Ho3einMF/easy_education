@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from course.models import Course, Category, Lesson
 from course.serializers import CourseListSerializer, LessonSerializer, SubCategorySerializer, \
-    CourseByCategorySerializer, CourseByTeacherSerializer
+    CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer
 from course.utils import get_course
 
 
@@ -60,3 +60,11 @@ class JoinToCourse(APIView):
         course = get_course(kwargs['course_id'])
         course.participants.add(request.user)
         return Response()
+
+
+class CoursesByUserAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CoursesByUserSerializer
+
+    def get_queryset(self):
+        return Course.objects.get_courses_by_user(self.request.user.id)

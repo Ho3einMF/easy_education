@@ -17,6 +17,9 @@ class CourseManager(models.Manager):
     def get_courses_by_teacher(self, teacher_id):
         return self.get_all_courses().filter(teacher_id=teacher_id)
 
+    def get_courses_by_user(self, user_id):
+        return self.filter(participants__in=[user_id])
+
 
 class LessonManager(models.Manager):
 
