@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 
 
 class CourseManager(models.Manager):
@@ -32,3 +33,11 @@ class CategoryManager(models.Manager):
     # using select_related to handling foreign key field in optimized mode.
     def get_all_categories(self):
         return self.select_related('parent')
+
+
+class CommentManager(models.Manager):
+
+    def get_course_comments(self, course_id):
+        return self.select_related('user').\
+            prefetch_related('replies', 'likes', 'dislikes').\
+            filter(course_id=course_id, hide=False, parent=None)

@@ -5,9 +5,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from course.models import Course, Category, Lesson
+from course.models import Course, Category, Lesson, Comment
 from course.serializers import CourseListSerializer, LessonSerializer, SubCategorySerializer, \
-    CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer
+    CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer, CommentListSerializer
 from course.utils import get_course
 
 
@@ -68,3 +68,11 @@ class CoursesByUserAPIView(ListAPIView):
 
     def get_queryset(self):
         return Course.objects.get_courses_by_user(self.request.user.id)
+
+
+class CommentListAPIView(ListAPIView):
+    # permission_classes = (IsAuthenticated,)
+    serializer_class = CommentListSerializer
+
+    def get_queryset(self):
+        return Comment.objects.get_course_comments(self.kwargs['course_id'])

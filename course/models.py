@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 
-from course.managers import CourseManager, LessonManager, CategoryManager
+from course.managers import CourseManager, LessonManager, CategoryManager, CommentManager
 from user.models import User
 
 
@@ -70,8 +70,8 @@ class Lesson(models.Model):
 
 class Comment(models.Model):
     comment = models.TextField()
-    like = models.IntegerField(default=0)
-    dislike = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True, null=True,)
+    dislikes = models.ManyToManyField(User, related_name='dislikes', blank=True, null=True,)
     hide = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=now)
 
@@ -81,5 +81,14 @@ class Comment(models.Model):
     # for handling replies comments
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='replies')
 
+    # Manager
+    objects = CommentManager()
+
     def __str__(self):
         return f'email: {self.user.email} | course: {self.course.title}'
+
+    def likes_count(self):
+        return self.likes.count()
+
+    def dislikes_count(self):
+        return self.dislikes.count()
