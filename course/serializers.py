@@ -96,19 +96,17 @@ class CommentLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('user', 'course', 'comment')
+        fields = ('course', 'comment')
 
     def save(self):
         like_comment(self.validated_data['course'], self.validated_data['comment'], self.context['request'].user)
-        super(CommentLikeSerializer, self).save()
 
 
 class CommentDislikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('user', 'course', 'comment')
+        fields = ('course', 'comment')
 
     def save(self):
         dislike_comment(self.validated_data['course'], self.validated_data['comment'], self.context['request'].user)
-        super(CommentDislikeSerializer, self).save()
