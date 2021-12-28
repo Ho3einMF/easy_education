@@ -5,12 +5,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from course.conf import COMMENT_LIKE_MESSAGE
+from course.conf import COMMENT_LIKE_MESSAGE, COMMENT_DISLIKE_MESSAGE
 from course.models import Course, Category, Lesson, Comment
 from course.serializers import CourseListSerializer, LessonSerializer, SubCategorySerializer, \
     CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer, CommentListSerializer, \
-    CommentCreateSerializer, CommentLikeSerializer
-from course.utils import get_course, like_comment
+    CommentCreateSerializer, CommentLikeSerializer, CommentDislikeSerializer
+from course.utils import get_course
 
 
 class CategoryListAPIView(ListAPIView):
@@ -100,4 +100,15 @@ class CommentLikeAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'detail': COMMENT_LIKE_MESSAGE}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentDislikeAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, **kwargs):
+        serializer = CommentDislikeSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': COMMENT_DISLIKE_MESSAGE}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

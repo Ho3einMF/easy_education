@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from course.models import Course, Category, Lesson, Comment
-from course.utils import like_comment
+from course.utils import like_comment, check_status, dislike_comment
 from user.serializers import TeacherSerializer
 
 
@@ -76,21 +76,14 @@ class ReplyCommentListSerializer(serializers.ModelSerializer):
 class CommentListSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     replies = ReplyCommentListSerializer(read_only=True, many=True)
-    status = serializers.SerializerMethodField('check')
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'comment', 'likes_count', 'dislikes_count', 'created_at', 'replies', 'status')
+        fields = ('id', 'user', 'comment', 'likes_count', 'dislikes_count', 'created_at', 'status', 'replies')
 
-    def check(self, obj):
-        for like in obj.likes.all():
-            if self.context['request'].user.id == like.id:
-                return 'liked'
-        for dislike in obj.dislikes.all():
-            if self.context['request'].user.id == dislike.id:
-                return 'disliked'
-        else:
-            return None
+    def get_status(self, obj):
+        return check_status(comment_obj=obj, user_id=self.context['request'].user.id)
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -109,3 +102,13 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         like_comment(self.validated_data['course'], self.validated_data['comment'], self.context['request'].user)
         super(CommentLikeSerializer, self).save()
 
+
+class CommentDislikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ('user', 'course', 'comment')
+
+    def save(self):
+        dislike_comment(self.validated_data['course'], self.validated_data['comment'], self.context['request'].user)
+        super(CommentDislikeSerializer, self).save()
