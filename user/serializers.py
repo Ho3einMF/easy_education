@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
-from user.models import User
+from user.models import User, Teacher
 from user.utils import check_new_password, check_old_password
 
 
@@ -33,8 +33,16 @@ class TokenSerializer(AuthTokenSerializer):
 
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
+        model = Teacher
+        exclude = ('id', 'user')
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer(read_only=True)
+
+    class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'image']
+        fields = ['id', 'first_name', 'last_name', 'email', 'image', 'teacher']
         extra_kwargs = {'email': {'read_only': True}}
 
 

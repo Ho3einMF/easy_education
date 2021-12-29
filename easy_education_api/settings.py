@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
+    'phonenumber_field',
 
     'django_cleanup.apps.CleanupConfig',  # Note: this package should be placed last in INSTALLED_APPS
 ]
@@ -158,3 +159,7 @@ REST_FRAMEWORK = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+# django-phonenumber-field Setting
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'IR'

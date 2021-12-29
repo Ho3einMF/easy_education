@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from course.models import Course, Category, Lesson, Comment
 from course.utils import like_comment, check_status, dislike_comment
-from user.serializers import TeacherSerializer
+from user.serializers import UserProfileSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class CourseCategoryListSerializer(serializers.ModelSerializer):
 
 
 class CourseListSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializer(read_only=True)
+    teacher = UserProfileSerializer(read_only=True)
     category = CourseCategoryListSerializer(read_only=True)
     hashtags = serializers.StringRelatedField(many=True)
 
@@ -36,7 +36,7 @@ class CourseListSerializer(serializers.ModelSerializer):
 
 
 class CourseByCategorySerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializer(read_only=True)
+    teacher = UserProfileSerializer(read_only=True)
     hashtags = serializers.StringRelatedField(many=True)
 
     class Meta:

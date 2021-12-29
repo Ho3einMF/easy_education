@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.conf import USER_CREATION_MESSAGE, PASSWORD_CHANGED_MESSAGE
-from user.serializers import SignupUserSerializer, TokenSerializer, TeacherSerializer, ChangePasswordSerializer
+from user.serializers import SignupUserSerializer, TokenSerializer, UserProfileSerializer, ChangePasswordSerializer
 from user.utils import get_user_or_404
 
 
@@ -31,12 +31,13 @@ class UserProfileAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        serializer = TeacherSerializer(request.user, context={'request': request})
+        serializer = UserProfileSerializer(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    # Update Profile
     def put(self, request):
         instance = get_user_or_404(user_id=request.user.id)
-        serializer = TeacherSerializer(instance=instance, data=request.data, partial=True, context={'request': request})
+        serializer = UserProfileSerializer(instance=instance, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

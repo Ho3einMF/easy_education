@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin
 
-from user.models import User
+from user.models import User, Teacher
 
 
 @admin.register(User)
@@ -29,3 +29,6 @@ class CustomUserAdmin(UserAdmin):
 
     search_fields = ('email',)
     ordering = ('email',)
+
+
+admin.site.register(Teacher)
