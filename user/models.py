@@ -29,7 +29,7 @@ class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher')
     phone_number = PhoneNumberField(unique=True)
     scanned_national_card = models.ImageField(upload_to='national_cards/')
-    birth_certificate = models.ImageField(upload_to='birth_certificate/')
+    scanned_birth_certificate = models.ImageField(upload_to='birth_certificate/')
     resume = models.FileField(upload_to='resume/')
     verified = models.BooleanField(default=False)
 

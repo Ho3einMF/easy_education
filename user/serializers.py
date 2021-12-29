@@ -36,6 +36,12 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         exclude = ('id', 'user')
 
+    def create(self, validated_data):
+        instance = Teacher(**validated_data)
+        instance.user = self.context['request'].user
+        instance.save()
+        return instance
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer(read_only=True)
