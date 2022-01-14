@@ -17,7 +17,9 @@ class CategoryListAPIView(ListAPIView):
     authentication_classes = ()
     permission_classes = (AllowAny,)
     serializer_class = SubCategorySerializer
-    queryset = Category.objects.get_all_categories()
+
+    def get_queryset(self):
+        return Category.objects.get_all_categories()
 
 
 class CourseListAPIView(ListAPIView):

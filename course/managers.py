@@ -1,7 +1,7 @@
 from django.core.cache import caches
 from django.db import models
 
-from course.conf import ALL_COURSES_TIMEOUT, COURSE_LESSON_SERIALIZER
+from course.conf import ALL_COURSES_TIMEOUT, COURSE_LESSON_SERIALIZER_TIMEOUT, ALL_CATEGORIES_TIMEOUT
 
 cache = caches['course']
 
@@ -45,7 +45,7 @@ class LessonManager(models.Manager):
             lessons_of_course = self.filter(course_id=course_id)
             lessons = {course_id: lessons_of_course}
 
-        cache.set('lessons', lessons, COURSE_LESSON_SERIALIZER)
+        cache.set('lessons', lessons, COURSE_LESSON_SERIALIZER_TIMEOUT)
         return lessons_of_course
 
 
@@ -53,7 +53,14 @@ class CategoryManager(models.Manager):
 
     # using select_related to handling foreign key field in optimized mode.
     def get_all_categories(self):
-        return self.select_related('parent')
+
+        categories = cache.get('categories')
+
+        if not categories:
+            categories = self.select_related('parent')
+            cache.set('categories', categories, ALL_CATEGORIES_TIMEOUT)
+
+        return categories
 
 
 class CommentManager(models.Manager):
