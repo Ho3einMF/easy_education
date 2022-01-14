@@ -26,9 +26,13 @@ class CourseCategoryListSerializer(serializers.ModelSerializer):
 
 
 class CourseListSerializer(serializers.ModelSerializer):
-    teacher = UserProfileSerializer(read_only=True)
+    teacher = serializers.SerializerMethodField()
     category = CourseCategoryListSerializer(read_only=True)
     hashtags = serializers.StringRelatedField(many=True)
+
+    @staticmethod
+    def get_teacher(obj):
+        return obj.teacher.get_full_name()
 
     class Meta:
         model = Course

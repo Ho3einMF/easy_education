@@ -18,7 +18,7 @@ urlpatterns = [
     # by teacher (list of courses held by the teacher)
     path('courses/teacher/<int:teacher_id>/', CourseByTeacherAPIView.as_view(), name='course-by-teacher'),
     # by user (list of courses that the user has participated in)
-    path('courses/user/<int:user_id>/', CoursesByUserAPIView.as_view(), name='course-by-user'),
+    path('courses/user/', CoursesByUserAPIView.as_view(), name='course-by-user'),
 
     # join to course
     path('course/join/<int:course_id>/', JoinToCourse.as_view(), name='course-join'),

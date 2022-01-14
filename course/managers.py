@@ -1,4 +1,9 @@
+from django.core.cache import caches
 from django.db import models
+
+from course.conf import ALL_COURSES_TIMEOUT
+
+cache = caches['course']
 
 
 class CourseManager(models.Manager):
@@ -6,10 +11,13 @@ class CourseManager(models.Manager):
     # using select_related and prefetch_related to handling
     # foreign keys and many to many fields in optimized mode.
     def get_all_courses(self):
-        return self. \
-               select_related('teacher'). \
-               select_related('category'). \
-               prefetch_related('hashtags').filter(is_published=True)
+        all_courses = cache.get('all_courses')
+        if not all_courses:
+            all_courses = self. \
+               select_related('teacher', 'category'). \
+               prefetch_related('hashtags', 'participants').filter(is_published=True)
+            cache.set('all_courses', all_courses, ALL_COURSES_TIMEOUT)
+        return all_courses
 
     def get_courses_by_category(self, category_id):
         return self.get_all_courses().filter(category_id=category_id)
@@ -18,7 +26,7 @@ class CourseManager(models.Manager):
         return self.get_all_courses().filter(teacher_id=teacher_id)
 
     def get_courses_by_user(self, user_id):
-        return self.filter(participants__in=[user_id])
+        return self.get_all_courses().filter(participants__in=[user_id])
 
 
 class LessonManager(models.Manager):

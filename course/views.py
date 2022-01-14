@@ -24,7 +24,9 @@ class CourseListAPIView(ListAPIView):
     authentication_classes = ()
     permission_classes = (AllowAny,)
     serializer_class = CourseListSerializer
-    queryset = Course.objects.get_all_courses()
+
+    def get_queryset(self):
+        return Course.objects.get_all_courses()
 
 
 class CourseByCategoryAPIView(ListAPIView):
@@ -73,7 +75,6 @@ class CoursesByUserAPIView(ListAPIView):
 
 
 class CommentListAPIView(ListAPIView):
-    # permission_classes = (IsAuthenticated,)
     serializer_class = CommentListSerializer
 
     def get_queryset(self):
@@ -83,7 +84,8 @@ class CommentListAPIView(ListAPIView):
 class CommentCreate(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = CommentCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -95,7 +97,8 @@ class CommentCreate(APIView):
 class CommentLikeAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, **kwargs):
+    @staticmethod
+    def post(request, **kwargs):
         serializer = CommentLikeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -106,7 +109,8 @@ class CommentLikeAPIView(APIView):
 class CommentDislikeAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, **kwargs):
+    @staticmethod
+    def post(request, **kwargs):
         serializer = CommentDislikeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
