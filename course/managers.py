@@ -1,7 +1,8 @@
 from django.core.cache import caches
 from django.db import models
 
-from course.conf import ALL_COURSES_TIMEOUT, COURSE_LESSON_SERIALIZER_TIMEOUT, ALL_CATEGORIES_TIMEOUT
+from course.conf import ALL_COURSES_TIMEOUT, COURSE_LESSON_SERIALIZER_TIMEOUT, ALL_CATEGORIES_TIMEOUT, \
+    COURSE_COMMENTS_TIMEOUT
 
 cache = caches['course']
 
@@ -41,11 +42,12 @@ class LessonManager(models.Manager):
             else:
                 lessons_of_course = self.filter(course_id=course_id)
                 lessons[course_id] = lessons_of_course
+                cache.set('lessons', lessons, COURSE_LESSON_SERIALIZER_TIMEOUT)
         else:
             lessons_of_course = self.filter(course_id=course_id)
             lessons = {course_id: lessons_of_course}
+            cache.set('lessons', lessons, COURSE_LESSON_SERIALIZER_TIMEOUT)
 
-        cache.set('lessons', lessons, COURSE_LESSON_SERIALIZER_TIMEOUT)
         return lessons_of_course
 
 
@@ -66,6 +68,23 @@ class CategoryManager(models.Manager):
 class CommentManager(models.Manager):
 
     def get_course_comments(self, course_id):
-        return self.select_related('user').\
-            prefetch_related('replies', 'likes', 'dislikes').\
-            filter(course_id=course_id, hide=False, parent=None)
+
+        comments = cache.get('comments')
+
+        if comments:
+            if course_id in comments:
+                comments_of_course = comments[course_id]
+            else:
+                comments_of_course = self.select_related('user'). \
+                    prefetch_related('replies', 'likes', 'dislikes'). \
+                    filter(course_id=course_id, hide=False, parent=None)
+                comments[course_id] = comments_of_course
+                cache.set('comments', comments, COURSE_COMMENTS_TIMEOUT)
+        else:
+            comments_of_course = self.select_related('user'). \
+                prefetch_related('replies', 'likes', 'dislikes'). \
+                filter(course_id=course_id, hide=False, parent=None)
+            comments = {course_id: comments_of_course}
+            cache.set('comments', comments, COURSE_COMMENTS_TIMEOUT)
+
+        return comments_of_course
