@@ -185,4 +185,3 @@ CACHES = {
 }
 
 CACHE_TTL = 60 * 15  # Cache time to live is 15 minutes.
-

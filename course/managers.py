@@ -1,7 +1,7 @@
 from django.core.cache import caches
 from django.db import models
 
-from course.conf import ALL_COURSES_TIMEOUT
+from course.conf import ALL_COURSES_TIMEOUT, COURSE_LESSON_SERIALIZER
 
 cache = caches['course']
 
@@ -32,7 +32,21 @@ class CourseManager(models.Manager):
 class LessonManager(models.Manager):
 
     def get_lessons_of_course(self, course_id):
-        return self.filter(course_id=course_id)
+
+        lessons = cache.get('lessons')
+
+        if lessons:
+            if course_id in lessons:
+                lessons_of_course = lessons[course_id]
+            else:
+                lessons_of_course = self.filter(course_id=course_id)
+                lessons[course_id] = lessons_of_course
+        else:
+            lessons_of_course = self.filter(course_id=course_id)
+            lessons = {course_id: lessons_of_course}
+
+        cache.set('lessons', lessons, COURSE_LESSON_SERIALIZER)
+        return lessons_of_course
 
 
 class CategoryManager(models.Manager):
