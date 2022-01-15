@@ -75,6 +75,12 @@ class TempLessonSerializer(serializers.ModelSerializer):
         model = TempLesson
         exclude = ('user',)
 
+    def create(self, validated_data):
+        instance = TempLesson(**validated_data)
+        instance.user = self.context['request'].user
+        instance.save()
+        return instance
+
 
 class ReplyCommentListSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
