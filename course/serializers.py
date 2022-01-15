@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from course.models import Course, Category, Lesson, Comment
+from course.models import Course, Category, Lesson, Comment, TempLesson
 from course.utils import like_comment, check_status, dislike_comment
 from user.serializers import UserProfileSerializer
 
@@ -67,6 +67,13 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         exclude = ('course',)
+
+
+class TempLessonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TempLesson
+        exclude = ('user',)
 
 
 class ReplyCommentListSerializer(serializers.ModelSerializer):

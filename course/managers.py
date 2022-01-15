@@ -51,6 +51,12 @@ class LessonManager(models.Manager):
         return lessons_of_course
 
 
+class TempLessonManager(models.Manager):
+
+    def get_temp_lessons_by_teacher(self, user_id):
+        return self.filter(user_id=user_id)
+
+
 class CategoryManager(models.Manager):
 
     # using select_related to handling foreign key field in optimized mode.

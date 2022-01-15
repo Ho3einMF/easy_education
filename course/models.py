@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 
-from course.managers import CourseManager, LessonManager, CategoryManager, CommentManager
+from course.managers import CourseManager, LessonManager, CategoryManager, CommentManager, TempLessonManager
 from user.models import User
 
 
@@ -66,6 +66,21 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TempLesson(models.Model):
+    url_files = models.URLField()
+    description = models.TextField()
+    sent_at = models.DateTimeField(default=now)
+
+    # Foreign Key
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Manager
+    objects = TempLessonManager()
+
+    def __str__(self):
+        return self.user.email
 
 
 class Comment(models.Model):

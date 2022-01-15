@@ -1,16 +1,17 @@
 # Create your views here.
 from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from course.conf import COMMENT_LIKE_MESSAGE, COMMENT_DISLIKE_MESSAGE
-from course.models import Course, Category, Lesson, Comment
+from course.models import Course, Category, Lesson, Comment, TempLesson
 from course.serializers import CourseListSerializer, LessonSerializer, SubCategorySerializer, \
     CourseByCategorySerializer, CourseByTeacherSerializer, CoursesByUserSerializer, CommentListSerializer, \
-    CommentCreateSerializer, CommentLikeSerializer, CommentDislikeSerializer
+    CommentCreateSerializer, CommentLikeSerializer, CommentDislikeSerializer, TempLessonSerializer
 from course.utils import get_course
+from user.permissions import IsTeacher
 
 
 class CategoryListAPIView(ListAPIView):
@@ -49,15 +50,6 @@ class CourseByTeacherAPIView(ListAPIView):
         return Course.objects.get_courses_by_teacher(self.kwargs['teacher_id'])
 
 
-class LessonsAPIView(ListAPIView):
-    authentication_classes = ()
-    permission_classes = (AllowAny,)
-    serializer_class = LessonSerializer
-
-    def get_queryset(self):
-        return Lesson.objects.get_lessons_of_course(self.kwargs['course_id'])
-
-
 class JoinToCourse(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -74,6 +66,23 @@ class CoursesByUserAPIView(ListAPIView):
 
     def get_queryset(self):
         return Course.objects.get_courses_by_user(self.request.user.id)
+
+
+class LessonsAPIView(ListAPIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    serializer_class = LessonSerializer
+
+    def get_queryset(self):
+        return Lesson.objects.get_lessons_of_course(self.kwargs['course_id'])
+
+
+class TempLessonAPIView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated, IsTeacher)
+    serializer_class = TempLessonSerializer
+
+    def get_queryset(self):
+        return TempLesson.objects.get_temp_lessons_by_teacher(self.request.user.id)
 
 
 class CommentListAPIView(ListAPIView):

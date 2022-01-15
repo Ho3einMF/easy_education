@@ -2,7 +2,7 @@ from django.urls import path
 
 from course.views import CourseListAPIView, CategoryListAPIView, CourseByCategoryAPIView, LessonsAPIView, \
     CourseByTeacherAPIView, JoinToCourse, CoursesByUserAPIView, CommentListAPIView, CommentCreate, CommentLikeAPIView, \
-    CommentDislikeAPIView
+    CommentDislikeAPIView, TempLessonAPIView
 
 app_name = 'course'
 urlpatterns = [
@@ -27,7 +27,12 @@ urlpatterns = [
     path('categories/', CategoryListAPIView.as_view(), name='category-list'),
 
     # **Lessons**
+
+    # verified lessons
     path('lessons/<int:course_id>/', LessonsAPIView.as_view(), name='course-lessons'),
+
+    # temporary lessons
+    path('lessons/temp/', TempLessonAPIView.as_view(), name='course-lessons'),
 
     # **Comments**
 
