@@ -86,11 +86,15 @@ class TempLessonSerializer(serializers.ModelSerializer):
 
 
 class ReplyCommentListSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comment
         fields = ('id', 'user', 'comment', 'likes_count', 'dislikes_count', 'created_at')
+
+    @staticmethod
+    def get_user(obj):
+        return obj.user.get_full_name()
 
 
 class CommentListSerializer(serializers.ModelSerializer):
