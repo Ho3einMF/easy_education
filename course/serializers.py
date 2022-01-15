@@ -58,9 +58,12 @@ class CourseByTeacherSerializer(serializers.ModelSerializer):
 
 
 class CoursesByUserSerializer(serializers.ModelSerializer):
+    teacher = UserProfileSerializer(read_only=True)
+    category = CourseCategoryListSerializer(read_only=True)
+
     class Meta:
         model = Course
-        fields = ('id', 'title', 'image')
+        exclude = ('hashtags', 'participants')
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -91,7 +94,7 @@ class ReplyCommentListSerializer(serializers.ModelSerializer):
 
 
 class CommentListSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
     replies = ReplyCommentListSerializer(read_only=True, many=True)
     status = serializers.SerializerMethodField()
 
@@ -101,6 +104,10 @@ class CommentListSerializer(serializers.ModelSerializer):
 
     def get_status(self, obj):
         return check_status(comment_obj=obj, user_id=self.context['request'].user.id)
+
+    @staticmethod
+    def get_user(obj):
+        return obj.user.get_full_name()
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
